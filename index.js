@@ -20,8 +20,12 @@ app.get('/', (req, res) => {
 });
 
 app.post("/", (req, res) => {
-    console.log(JSON.stringify(req.body, 0, 2));
-    replaceNamesOfBoard(1891167558);
+    const boardID = req.body.event.boardId;
+    console.log(`Request from board ${boardID}...`);
+    // console.log(JSON.stringify(req.body, 0, 2));
+
+    replaceNamesOfBoard(boardID);
+
     res.status(200).send(req.body);
 })
 
@@ -52,7 +56,7 @@ async function replaceNamesOfBoard(boardID) {
         }
     }
 
-    console.log(updatedItems);
+    console.log("completed array of updated items: ", updatedItems);
 }
 
 
@@ -113,7 +117,7 @@ async function getBoardItemPeople(boardID) {
         updatedItemArray.push(updatedItem);
         // console.log(updatedItem);
     }
-    console.log(updatedItemArray);
+    // console.log(updatedItemArray);
     return updatedItemArray;
 }
 
@@ -133,5 +137,5 @@ async function mutate(boardID, itemID, column, text) {
 
     const response = await fetch("https://api.monday.com/v2", options);
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
 }
