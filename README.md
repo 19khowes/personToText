@@ -1,0 +1,1 @@
+A webhook receiver for monday.com to convert the names of people into a text column
