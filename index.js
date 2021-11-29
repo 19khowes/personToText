@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 
 app.post("/", (req, res) => {
     let boardID = "no board";
-    console.log(req.body.event);
+    // console.log(req.body.event);
     if (req.body.event) {
         boardID = req.body.event.boardId;
     }
@@ -88,41 +88,43 @@ async function getBoardItemPeople(boardID) {
         items = boardJSON.data.boards[0].items
     }
 
-    for (let item of items) {
-        const idRE = /[0-9]{7,}/;
-        const itemID = item.id;
-        // console.log(itemID);
-        const itemValue = item.column_values[0].value;
-        let personID = undefined;
-        let personName = undefined;
-        // console.log(itemValue);
-
-        if (itemValue) {
-            const idmatch = itemValue.match(idRE);
-            personID = idmatch[0];
-            // console.log(personID);
-
-            // Fetch for the name of people given personid
-            const personquery = `query { users (ids:${personID}) { name } }`;
-            // Update options of request to fetch
-            options.body = JSON.stringify({
-                query: personquery
-            })
-            const personResponse = await fetch("https://api.monday.com/v2", options);
-            const personJSON = await personResponse.json();
-            personName = personJSON.data.users[0].name;
-            // console.log(personName);
+    if (items) {
+        for (let item of items) {
+            const idRE = /[0-9]{7,}/;
+            const itemID = item.id;
+            // console.log(itemID);
+            const itemValue = item.column_values[0].value;
+            let personID = undefined;
+            let personName = undefined;
+            // console.log(itemValue);
+    
+            if (itemValue) {
+                const idmatch = itemValue.match(idRE);
+                personID = idmatch[0];
+                // console.log(personID);
+    
+                // Fetch for the name of people given personid
+                const personquery = `query { users (ids:${personID}) { name } }`;
+                // Update options of request to fetch
+                options.body = JSON.stringify({
+                    query: personquery
+                })
+                const personResponse = await fetch("https://api.monday.com/v2", options);
+                const personJSON = await personResponse.json();
+                personName = personJSON.data.users[0].name;
+                // console.log(personName);
+            }
+    
+    
+    
+            let updatedItem = {
+                itemID,
+                personID,
+                personName
+            };
+            updatedItemArray.push(updatedItem);
+            // console.log(updatedItem);
         }
-
-
-
-        let updatedItem = {
-            itemID,
-            personID,
-            personName
-        };
-        updatedItemArray.push(updatedItem);
-        // console.log(updatedItem);
     }
     // console.log(updatedItemArray);
     return updatedItemArray;
