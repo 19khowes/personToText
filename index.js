@@ -20,7 +20,11 @@ app.get('/', (req, res) => {
 });
 
 app.post("/", (req, res) => {
-    const boardID = req.body.event.boardId;
+    let boardID = "no board";
+    console.log(req.body.event);
+    if (req.body.event) {
+        boardID = req.body.event.boardId;
+    }
     console.log(`Request from board ${boardID}...`);
     // console.log(JSON.stringify(req.body, 0, 2));
 
