@@ -83,7 +83,10 @@ async function getBoardItemPeople(boardID) {
     const boardJSON = await boardResponse.json();
     // console.log(JSON.stringify(boardJSON, null, 2))
 
-    const items = boardJSON.data.boards[0].items
+    let items;
+    if (boardJSON.data) {
+        items = boardJSON.data.boards[0].items
+    }
 
     for (let item of items) {
         const idRE = /[0-9]{7,}/;
