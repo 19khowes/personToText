@@ -21,14 +21,19 @@ app.get('/', (req, res) => {
 
 app.post("/", (req, res) => {
     let boardID = "no board";
+    let columnTitle;
+    let columnID;
     // console.log(req.body.event);
     if (req.body.event) {
         boardID = req.body.event.boardId;
+        columnTitle = req.body.event.columnTitle;
+        columnID = req.body.event.columnId;
     }
-    console.log(`Request from board ${boardID}...`);
+    console.log(`Request from board ${boardID}...\n`);
+    // console.log(req.body);
     // console.log(JSON.stringify(req.body, 0, 2));
 
-    replaceNamesOfBoard(boardID);
+    replaceNamesOfBoard(boardID, columnID);
 
     res.status(200).send(req.body);
 })
@@ -50,15 +55,35 @@ let options = {
 
 
 
-async function replaceNamesOfBoard(boardID) {
-    const updatedItems = await getBoardItemPeople(boardID);
+async function replaceNamesOfBoard(boardID, columnID) {
+    const updatedItems = await getBoardItemPeople(boardID, columnID);
 
-    // Change each item with updated names (from updatedItems)
-    for (let updatedItem of updatedItems) {
-        if (updatedItem.personName) {
-            mutate(boardID, parseInt(updatedItem.itemID), "text", updatedItem.personName);
+    // File Preparation board
+    if (boardID == 1216072299) {
+        // Editor (FP) User
+        if (columnID == "people") {
+            // Change each item with updated names (from updatedItems)
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text3", updatedItem.personName);
+                }
+            }
+        }
+        // Reviewer (FP) User
+        if (columnID == "people2") {
+            // Change each item with updated names (from updatedItems)
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text9", updatedItem.personName);
+                }
+            }
         }
     }
+
+
+
+
+
 
     console.log("completed array of updated items: ", updatedItems);
 }
@@ -67,12 +92,12 @@ async function replaceNamesOfBoard(boardID) {
 
 
 
-async function getBoardItemPeople(boardID) {
+async function getBoardItemPeople(boardID, columnID) {
     // Will fill this away with new objects 
     let updatedItemArray = [];
     // Set query for board to get
-    const boardquery = `query { boards (ids:${boardID}) { name items 
-        { id column_values (ids:"person") { id value } }
+    const boardquery = `query { boards (ids:${boardID}) { items 
+        { id column_values (ids: ${columnID}) { id value } }
         } }`;
     // Update options of request to fetch
     options.body = JSON.stringify({
@@ -83,13 +108,16 @@ async function getBoardItemPeople(boardID) {
     const boardJSON = await boardResponse.json();
     // console.log(JSON.stringify(boardJSON, null, 2))
 
+    // console.log(boardJSON);
     let items;
     if (boardJSON.data) {
         items = boardJSON.data.boards[0].items
     }
 
     if (items) {
+        // console.log(items);
         for (let item of items) {
+            // console.log(item);
             const idRE = /[0-9]{7,}/;
             const itemID = item.id;
             // console.log(itemID);
@@ -97,12 +125,12 @@ async function getBoardItemPeople(boardID) {
             let personID = undefined;
             let personName = undefined;
             // console.log(itemValue);
-    
+
             if (itemValue) {
                 const idmatch = itemValue.match(idRE);
                 personID = idmatch[0];
                 // console.log(personID);
-    
+
                 // Fetch for the name of people given personid
                 const personquery = `query { users (ids:${personID}) { name } }`;
                 // Update options of request to fetch
@@ -114,9 +142,9 @@ async function getBoardItemPeople(boardID) {
                 personName = personJSON.data.users[0].name;
                 // console.log(personName);
             }
-    
-    
-    
+
+
+
             let updatedItem = {
                 itemID,
                 personID,
