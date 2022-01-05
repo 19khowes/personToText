@@ -116,7 +116,15 @@ async function replaceNamesOfBoard(boardID, columnID) {
 
     // File Publishing Board
     if (boardID == 1216070690) {
-        
+        // Publisher (User) 
+        if (columnID == "people") {
+            // Change each item with updated names (from updatedItems) for Publisher {text2}
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text2", updatedItem.personName);
+                }
+            }
+        }
     }
 
 
