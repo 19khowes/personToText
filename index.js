@@ -115,7 +115,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
     }
 
     // File Publishing Board
-    if (boardID == 1216070690) {
+    if (boardID == 1219099844) {
         // Publisher (User) 
         if (columnID == "people") {
             // Change each item with updated names (from updatedItems) for Publisher {text2}
