@@ -62,7 +62,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
     if (boardID == 1216072299) {
         // Editor (FP) User
         if (columnID == "people") {
-            // Change each item with updated names (from updatedItems)
+            // Change each item with updated names (from updatedItems) for Editor (FP) {text3}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
                     mutate(boardID, parseInt(updatedItem.itemID), "text3", updatedItem.personName);
@@ -71,7 +71,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
         }
         // Reviewer (FP) User
         if (columnID == "people2") {
-            // Change each item with updated names (from updatedItems)
+            // Change each item with updated names (from updatedItems) for Reviwer (FP) {text9}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
                     mutate(boardID, parseInt(updatedItem.itemID), "text9", updatedItem.personName);
@@ -82,6 +82,35 @@ async function replaceNamesOfBoard(boardID, columnID) {
 
     // File Conversion Board
     if (boardID == 1216070690) {
+        // Editor (User)
+        if (columnID == "people4") {
+            // Change each item with updated names (from updatedItems) for Editor {text48}
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text48", updatedItem.personName);
+                }
+            }
+        }
+
+        // Initial Reviewer (User)
+        if (columnID == "people3") {
+            // Change each item with updated names (from updatedItems) for Initial Reviewer {text0}
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text0", updatedItem.personName);
+                }
+            }
+        }
+
+        // Final Reviewer (User)
+        if (columnID == "people20") {
+            // Change each item with updated names (from updatedItems) for Final Reviewer {text457}
+            for (let updatedItem of updatedItems) {
+                if (updatedItem.personName) {
+                    mutate(boardID, parseInt(updatedItem.itemID), "text457", updatedItem.personName);
+                }
+            }
+        }
 
     }
 
