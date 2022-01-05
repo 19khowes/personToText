@@ -58,7 +58,7 @@ let options = {
 async function replaceNamesOfBoard(boardID, columnID) {
     const updatedItems = await getBoardItemPeople(boardID, columnID);
 
-    // File Preparation board
+    // File Preparation Board
     if (boardID == 1216072299) {
         // Editor (FP) User
         if (columnID == "people") {
@@ -80,7 +80,15 @@ async function replaceNamesOfBoard(boardID, columnID) {
         }
     }
 
+    // File Conversion Board
+    if (boardID == 1216070690) {
 
+    }
+
+    // File Publishing Board
+    if (boardID == 1216070690) {
+        
+    }
 
 
 
