@@ -56,12 +56,14 @@ let options = {
 
 
 async function replaceNamesOfBoard(boardID, columnID) {
+    console.log(`getting people from board ${boardID}: `);
     const updatedItems = await getBoardItemPeople(boardID, columnID);
 
     // File Preparation Board
     if (boardID == 1216072299) {
         // Editor (FP) User
         if (columnID == "people") {
+            console.log("Making change to Editor (FP)...");
             // Change each item with updated names (from updatedItems) for Editor (FP) {text3}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -71,6 +73,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
         }
         // Reviewer (FP) User
         if (columnID == "people2") {
+            console.log("Making change to Reviewer (FP)...");
             // Change each item with updated names (from updatedItems) for Reviwer (FP) {text9}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -84,6 +87,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
     if (boardID == 1216070690) {
         // Editor (User)
         if (columnID == "people4") {
+            console.log("Making change to Editor (FC)...");
             // Change each item with updated names (from updatedItems) for Editor {text48}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -94,6 +98,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
 
         // Initial Reviewer (User)
         if (columnID == "people3") {
+            console.log("Making change to Initial Reviewer (FC)");
             // Change each item with updated names (from updatedItems) for Initial Reviewer {text0}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -104,6 +109,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
 
         // Final Reviewer (User)
         if (columnID == "people20") {
+            console.log("Making change to Final Reviewer (FC)...");
             // Change each item with updated names (from updatedItems) for Final Reviewer {text457}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -118,6 +124,7 @@ async function replaceNamesOfBoard(boardID, columnID) {
     if (boardID == 1219099844) {
         // Publisher (User) 
         if (columnID == "people") {
+            console.log("Making change to Publisher...");
             // Change each item with updated names (from updatedItems) for Publisher {text2}
             for (let updatedItem of updatedItems) {
                 if (updatedItem.personName) {
@@ -173,19 +180,25 @@ async function getBoardItemPeople(boardID, columnID) {
 
             if (itemValue) {
                 const idmatch = itemValue.match(idRE);
-                personID = idmatch[0];
-                // console.log(personID);
-
-                // Fetch for the name of people given personid
-                const personquery = `query { users (ids:${personID}) { name } }`;
-                // Update options of request to fetch
-                options.body = JSON.stringify({
-                    query: personquery
-                })
-                const personResponse = await fetch("https://api.monday.com/v2", options);
-                const personJSON = await personResponse.json();
-                personName = personJSON.data.users[0].name;
-                // console.log(personName);
+                // console.log(`Item value: ${itemValue}`);
+                // console.log(`Item match: ${idmatch}`);
+                
+                // Only query for person if an ID was found in item
+                if (idmatch) {
+                    personID = idmatch[0];
+                    // console.log(personID);
+    
+                    // Fetch for the name of people given personid
+                    const personquery = `query { users (ids:${personID}) { name } }`;
+                    // Update options of request to fetch
+                    options.body = JSON.stringify({
+                        query: personquery
+                    })
+                    const personResponse = await fetch("https://api.monday.com/v2", options);
+                    const personJSON = await personResponse.json();
+                    personName = personJSON.data.users[0].name;
+                    // console.log(personName);
+                }
             }
 
 
