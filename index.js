@@ -36,7 +36,7 @@ app.post("/", (req, res) => {
     replaceNamesOfBoard(boardID, columnID);
 
     res.status(200).send(req.body);
-})
+});
 
 
 
