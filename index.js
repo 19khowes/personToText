@@ -3,10 +3,12 @@
 //     updateBoardNames
 // } from './mutate';
 
-const PORT = process.env.PORT || 8080;
+import 'dotenv/config'
 import express from 'express';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
+
+const PORT = process.env.PORT || 8080;
 const app = express().use(bodyParser.json());
 
 
@@ -19,6 +21,7 @@ app.get('/', (req, res) => {
     return res.end('hello');
 });
 
+// monday webhook will make a post request (requires the exact request body to be the response)
 app.post("/", (req, res) => {
     let boardID = "no board";
     let columnTitle;
@@ -30,21 +33,21 @@ app.post("/", (req, res) => {
         columnID = req.body.event.columnId;
     }
     console.log(`Request from board ${boardID}...\n`);
-    // console.log(req.body);
     // console.log(JSON.stringify(req.body, 0, 2));
 
+    // after getting which board and column the request came from replace those names with text
     replaceNamesOfBoard(boardID, columnID);
 
     res.status(200).send(req.body);
 })
 
 
-
+// used for accessing monday.com (autorization will change here per user)
 let options = {
     method: 'post',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjEyNzkxNTIxMSwidWlkIjoyMTA0Mzc0MywiaWFkIjoiMjAyMS0xMC0wOFQxMzo0ODo1Ny43ODRaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6ODE2NTcyMSwicmduIjoidXNlMSJ9.kzW2hSZIHu5k6HrxYjRQdFmUcMdwDL4e2wmvN_Zt_Ys'
+        'Authorization': process.env.MONDAY_KEY
     },
     body: JSON.stringify({
         query: undefined
@@ -57,6 +60,7 @@ let options = {
 
 async function replaceNamesOfBoard(boardID, columnID) {
     console.log(`getting people from board ${boardID}: `);
+    // get each of the people and their item as an array of objects (updatedItems)
     const updatedItems = await getBoardItemPeople(boardID, columnID);
 
     // File Preparation Board
@@ -143,7 +147,12 @@ async function replaceNamesOfBoard(boardID, columnID) {
 
 
 
-
+/**
+ * gets all of the people in a given board and column from a monday board
+ * @param {the board to get the items for} boardID 
+ * @param {the column the request came from} columnID 
+ * @returns an array of objects with the people and their item ids 
+ */
 async function getBoardItemPeople(boardID, columnID) {
     // Will fill this away with new objects 
     let updatedItemArray = [];
@@ -216,6 +225,13 @@ async function getBoardItemPeople(boardID, columnID) {
     return updatedItemArray;
 }
 
+/**
+ * makes the change to the board
+ * @param {which board to mutute} boardID 
+ * @param {which item to mutate} itemID 
+ * @param {which column to add too} column 
+ * @param {what to mutate the column to} text 
+ */
 async function mutate(boardID, itemID, column, text) {
     const variables = JSON.stringify({
         myBoardId: boardID,
